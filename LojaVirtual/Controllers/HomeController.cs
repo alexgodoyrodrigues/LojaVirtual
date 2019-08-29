@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using LojaVirtual.Libraries.Email;
 using LojaVirtual.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace LojaVirtual.Controllers
 {
@@ -29,9 +31,30 @@ namespace LojaVirtual.Controllers
                 contato.Email = HttpContext.Request.Form["email"];
                 contato.Texto = HttpContext.Request.Form["texto"];
 
-                ContatoEmail.EnviarContatoPorEmail(contato);
+                var listaMensagens = new List<ValidationResult>();
+                var contexto = new ValidationContext(contato);
 
-                ViewData["MSG_S"] = "Mensagem de contato enviada com sucesso!";
+                bool isValid = Validator.TryValidateObject(contato, contexto, listaMensagens, true);
+
+                if (isValid)
+                {
+                    ContatoEmail.EnviarContatoPorEmail(contato);
+
+                    ViewData["MSG_S"] = "Mensagem de contato enviada com sucesso!";
+                }
+                else
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (var texto in listaMensagens)
+                    {
+                        sb.Append(texto.ErrorMessage + "<br/>");
+                    }
+
+                    ViewData["MSG_E"] = sb.ToString();
+                    ViewData["CONTATO"] = contato;
+                }
+                
             }
             catch (Exception e)
             {
