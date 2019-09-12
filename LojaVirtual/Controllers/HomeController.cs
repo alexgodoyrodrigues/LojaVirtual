@@ -7,14 +7,45 @@ using LojaVirtual.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using LojaVirtual.Database;
+using LojaVirtual.Repositories.Contracts;
 
 namespace LojaVirtual.Controllers
 {
     public class HomeController : Controller
     {
+        private IClienteRepository _repositoryCliente;
+        private INewsletterRepository _repositoryNewsletter;
+
+        public HomeController(IClienteRepository repositoryCliente, INewsletterRepository repositoryNewsletter)
+        {
+            _repositoryCliente = repositoryCliente;
+            _repositoryNewsletter = repositoryNewsletter;
+        }
+
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index([FromForm] NewsletterEmail newsletter)
+        {
+            if (ModelState.IsValid)
+            {
+
+                _repositoryNewsletter.Cadastrar(newsletter);
+
+                TempData["MSG_S"] = "E-mail cadastrado com sucesso!"; 
+                
+                return RedirectToAction(nameof(Index));
+
+            } else
+            {
+                return View();
+            }
         }
 
         public IActionResult Contato()
@@ -71,8 +102,24 @@ namespace LojaVirtual.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult CadastroCliente()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CadastroCliente([FromForm] Cliente cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                _repositoryCliente.Cadastrar(cliente);
+                
+                TempData["MSG_S"] = "Cadastro realizado com sucesso!";
+
+                return RedirectToAction(nameof(CadastroCliente));
+            }
+
             return View();
         }
 
