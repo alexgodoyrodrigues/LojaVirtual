@@ -9,6 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using LojaVirtual.Database;
 using LojaVirtual.Repositories.Contracts;
+using Microsoft.AspNetCore.Http;
+using LojaVirtual.Libraries.Login;
 
 namespace LojaVirtual.Controllers
 {
@@ -16,13 +18,14 @@ namespace LojaVirtual.Controllers
     {
         private IClienteRepository _repositoryCliente;
         private INewsletterRepository _repositoryNewsletter;
+        private LoginCliente _loginCliente;
 
-        public HomeController(IClienteRepository repositoryCliente, INewsletterRepository repositoryNewsletter)
+        public HomeController(IClienteRepository repositoryCliente, INewsletterRepository repositoryNewsletter, LoginCliente loginCliente)
         {
             _repositoryCliente = repositoryCliente;
             _repositoryNewsletter = repositoryNewsletter;
+            _loginCliente = loginCliente;
         }
-
 
         [HttpGet]
         public IActionResult Index()
@@ -97,9 +100,44 @@ namespace LojaVirtual.Controllers
             return View("Contato");
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login([FromForm] Cliente cliente)
+        {
+            Cliente clienteDB = _repositoryCliente.Login(cliente.Email, cliente.Senha);
+
+            if(clienteDB != null)
+            {
+                _loginCliente.Login(clienteDB);
+
+                return new RedirectResult(Url.Action(nameof(Painel)));
+            }
+            else
+            {
+                ViewData["MSG_E"] = "Usuário não encontrado, verifique e-mail ou senha";
+
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Painel()
+        {
+            Cliente cliente = _loginCliente.GetCliente();
+
+            if (cliente != null)
+            {
+                return new ContentResult() { Content = "Usuário ID: " + cliente.Id + ". Logado!" };
+            }
+            else
+            {
+                return new ContentResult() { Content = "Acesso negado!" };
+            }
         }
 
         [HttpGet]

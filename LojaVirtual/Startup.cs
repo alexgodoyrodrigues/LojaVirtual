@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using LojaVirtual.Repositories;
 using LojaVirtual.Repositories.Contracts;
+using LojaVirtual.Libraries.Sessao;
+using LojaVirtual.Libraries.Login;
 
 namespace LojaVirtual
 {
@@ -34,6 +36,7 @@ namespace LojaVirtual
              * 
              */
 
+            services.AddHttpContextAccessor();
             services.AddScoped<INewsletterRepository, NewsletterRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
 
@@ -43,6 +46,15 @@ namespace LojaVirtual
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            //session - configuração
+            services.AddMemoryCache(); //guardar os dados na memoria
+            services.AddSession(options => {
+                      
+            });
+
+            services.AddScoped<Sessao>();
+            services.AddScoped<LoginCliente>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -69,7 +81,7 @@ namespace LojaVirtual
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSession();
             
             app.UseMvc(routes =>
             {
