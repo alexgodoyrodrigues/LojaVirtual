@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LojaVirtual.Database;
+﻿using LojaVirtual.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +25,7 @@ namespace LojaVirtual
         
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
+            /* 
              * 
              * Padrao Repository
              * 
@@ -39,10 +34,11 @@ namespace LojaVirtual
             services.AddHttpContextAccessor();
             services.AddScoped<INewsletterRepository, NewsletterRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IColaboradorRepository, ColaboradorRepository>();
+            services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
-                
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -50,11 +46,11 @@ namespace LojaVirtual
             //session - configuração
             services.AddMemoryCache(); //guardar os dados na memoria
             services.AddSession(options => {
-                      
             });
 
             services.AddScoped<Sessao>();
             services.AddScoped<LoginCliente>();
+            services.AddScoped<LoginColaborador>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -85,6 +81,11 @@ namespace LojaVirtual
             
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                  name: "areas",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
