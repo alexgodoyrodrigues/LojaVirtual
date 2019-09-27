@@ -56,7 +56,7 @@ namespace LojaVirtual
 
             string connection = "Server=DESKTOP-DF3H30G\\SQLEXPRESS;Database=LojaVirtual;User Id=sa;Password = masterkey;";
 
-            services.AddDbContext<LojaVirtualContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<LojaVirtualContext>(options => options.UseSqlServer(connection, builder => builder.UseRowNumberForPaging()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
