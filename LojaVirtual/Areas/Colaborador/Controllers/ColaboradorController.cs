@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LojaVirtual.Libraries.Email;
+using LojaVirtual.Libraries.Filtro;
 using LojaVirtual.Libraries.Lang;
 using LojaVirtual.Libraries.Texto;
 using LojaVirtual.Repositories.Contracts;
@@ -12,6 +13,7 @@ using X.PagedList;
 namespace LojaVirtual.Areas.Colaborador.Controllers
 {
     [Area("Colaborador")]
+    [ColaboradorAutorizacao("G")]
     public class ColaboradorController : Controller
     {
         private IColaboradorRepository _colaboradorRepository;
@@ -65,7 +67,7 @@ namespace LojaVirtual.Areas.Colaborador.Controllers
             Models.Colaborador colaborador = _colaboradorRepository.ObterColaborador(Id);
             colaborador.Senha = KeyGenerator.GetUniqueKey(8);
 
-            _colaboradorRepository.Atualizar(colaborador);
+            _colaboradorRepository.AtualizarSenha(colaborador);
 
             //Enviar Senha
             _gerenciaEmail.EnviaSenhaColaboradorPorEmail(colaborador);

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject LojaVirtual.Libraries.Login.LoginColaborador colaborador
+
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
@@ -9,24 +11,24 @@
     <title>@ViewBag.Title</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="~/resources/lib/bootstrap-4.2.1-dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="~/resources/lib/pagedlist/PagedList.css" rel="stylesheet" type="text/css"/>
+    <link href="~/resources/lib/bootstrap-4.2.1-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/resources/lib/pagedlist/PagedList.css" rel="stylesheet" type="text/css" />
 
     <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @@media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
-      }
+
+        @@media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
     </style>
     <!-- Custom styles for this template -->
     <link href="~/resources/lib/dashboard/dashboard.css" rel="stylesheet">
@@ -59,6 +61,15 @@
                                 Pedidos
                             </a>
                         </li>
+                        @if (colaborador.GetColaborador().Tipo == "G")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Colaborador" asp-action="Index">
+                                    <span data-feather="users"></span>
+                                    Colaborador
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link" asp-action="Index" asp-controller="Categoria">
                                 <span data-feather="file"></span>
