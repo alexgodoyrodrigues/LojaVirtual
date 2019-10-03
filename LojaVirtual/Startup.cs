@@ -13,6 +13,7 @@ using LojaVirtual.Libraries.Login;
 using System.Net.Mail;
 using System.Net;
 using LojaVirtual.Libraries.Email;
+using LojaVirtual.Libraries.Middleware;
 
 namespace LojaVirtual
 {
@@ -93,8 +94,7 @@ namespace LojaVirtual
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts();          
             }
 
             app.UseHttpsRedirection();
@@ -102,6 +102,7 @@ namespace LojaVirtual
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
+            app.UseMiddleware<ValidateAntiForgeryTokenMiddleware>();
             
             app.UseMvc(routes =>
             {
