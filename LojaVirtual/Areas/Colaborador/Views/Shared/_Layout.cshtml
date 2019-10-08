@@ -10,6 +10,8 @@
     <meta name="generator" content="Jekyll v3.8.5">
     <title>@ViewBag.Title</title>
 
+    <link href="~/css/StyleSheet.css" rel="stylesheet" />
+
     <!-- Bootstrap core CSS -->
     <link href="~/resources/lib/bootstrap-4.2.1-dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/resources/lib/pagedlist/PagedList.css" rel="stylesheet" type="text/css" />
@@ -61,7 +63,7 @@
                                 Pedidos
                             </a>
                         </li>
-                        @if (colaborador.GetColaborador().Tipo == ColaboradorTipoConstant.Gerente)
+                        @if (colaborador.GetColaborador() != null && colaborador.GetColaborador().Tipo == ColaboradorTipoConstant.Gerente)
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Colaborador" asp-action="Index">

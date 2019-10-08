@@ -24,6 +24,6 @@ namespace LojaVirtual.Models
         [ForeignKey("CategoriaId")]
         public virtual Categoria Categoria { get; set; }
 
-        public virtual ICollection<Imagem> imagens { get; set; }
+        public virtual ICollection<Imagem> Imagens { get; set; }
     }
 }
