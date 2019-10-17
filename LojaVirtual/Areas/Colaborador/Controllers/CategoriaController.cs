@@ -92,8 +92,6 @@ namespace LojaVirtual.Areas.Colaborador.Controllers
             TempData["MSG_S"] = Mensagem.MSG_S002;
 
             return RedirectToAction(nameof(Index));
-
-            return View();
         }
     }
 }

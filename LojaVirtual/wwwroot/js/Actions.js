@@ -6,4 +6,27 @@
             e.preventDefault();
         }
     });
+
+    $('.dinheiro').mask('000.000.000.000.000,00', { reverse: true }); 
+
+    AjaxUploadImagemProduto();
 });
+
+function AjaxUploadImagemProduto() {
+    $(".img-upload").click(function () {
+        $(this).parent().find(".input-file").click();
+    });
+
+    $(".input-file").change(function () {
+
+        //Formulario de dados
+        var Formulario = new FormData();    
+        var Binario = $(this)[0].files[0];
+
+        Formulario.append("file", Binario);
+
+        //Requisição AJAX
+
+
+    });
+}
