@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LojaVirtual.Libraries.Arquivo;
 using LojaVirtual.Libraries.Lang;
 using LojaVirtual.Models;
 using LojaVirtual.Repositories.Contracts;
@@ -15,11 +16,13 @@ namespace LojaVirtual.Areas.Colaborador.Controllers
     {
         private IProdutoRepository _produtoRepository;
         private ICategoriaRepository _categoriaRepository;
+        private IImagemRepository _imagemRepository;
 
-        public ProdutoController(IProdutoRepository produtoRepository, ICategoriaRepository categoriaRepository)
+        public ProdutoController(IProdutoRepository produtoRepository, ICategoriaRepository categoriaRepository, IImagemRepository imagemRepository)
         {
             _produtoRepository = produtoRepository;
             _categoriaRepository = categoriaRepository;
+            _imagemRepository = imagemRepository;
         }
 
         public IActionResult Index(int? pagina, string pesquisa)
@@ -44,14 +47,22 @@ namespace LojaVirtual.Areas.Colaborador.Controllers
             {
                 _produtoRepository.Cadastrar(produto);
 
+                List<Imagem> ListaImagensDef = GerenciadorArquivo.MoverImagensProduto(new List<string>(Request.Form["imagem"]), produto.Id);
+
+                _imagemRepository.CadastrarImagens(ListaImagensDef, produto.Id);
+
                 TempData["MSG_S"] = Mensagem.MSG_S001;
 
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                produto.Imagens = (ICollection<Imagem>) new List<string>(Request.Form["imagem"]).Select(a=>new Imagem() { Caminho = a });
+    
+                ViewBag.Categorias = _categoriaRepository.ObterTodasCategorias().Select(a => new SelectListItem(a.Nome, a.Id.ToString()));
 
-            ViewBag.Categorias = _categoriaRepository.ObterTodasCategorias().Select(a => new SelectListItem(a.Nome, a.Id.ToString()));
-
-            return View();
+                return View(produto);
+            }
         }
 
         [HttpGet]
