@@ -55,24 +55,42 @@ namespace LojaVirtual.Libraries.Arquivo
                 if (! string.IsNullOrEmpty(CaminhoTemp))
                 {
                     var nomeArquivo = Path.GetFileName(CaminhoTemp);
-                    var caminhoAbsolutoTemp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/temp", nomeArquivo);
 
-                    var caminhoAbsolutoDef = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", ProdutoId.ToString(), nomeArquivo);
+                    var CaminhoDef = Path.Combine("/uploads", ProdutoId.ToString(), nomeArquivo).Replace("\\", "/");
 
-                    if (File.Exists(caminhoAbsolutoTemp))
+                    if (CaminhoDef != CaminhoTemp)
                     {
-                        File.Copy(caminhoAbsolutoTemp, caminhoAbsolutoDef);
+                        var Caminho = Path.Combine("/uploads", ProdutoId.ToString(), nomeArquivo);
 
-                        if (File.Exists(caminhoAbsolutoDef))
+                        var caminhoAbsolutoTemp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/temp", nomeArquivo);
+
+                        var caminhoAbsolutoDef = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", ProdutoId.ToString(), nomeArquivo);
+
+                        if (File.Exists(caminhoAbsolutoTemp))
                         {
-                            File.Delete(caminhoAbsolutoTemp);
-                        }
+                            if (File.Exists(caminhoAbsolutoDef))
+                            {
+                                File.Delete(caminhoAbsolutoDef);
+                                
+                            }
 
-                        ListaImagensDef.Add(new Imagem() { Caminho = Path.Combine("/uploads", ProdutoId.ToString(), nomeArquivo).Replace("\\", "/"), ProdutoId = ProdutoId});
+                            File.Copy(caminhoAbsolutoTemp, caminhoAbsolutoDef);
+
+                            if (File.Exists(caminhoAbsolutoDef))
+                            {
+                                File.Delete(caminhoAbsolutoTemp);
+                            }
+
+                            ListaImagensDef.Add(new Imagem() { Caminho = Path.Combine("/uploads", ProdutoId.ToString(), nomeArquivo).Replace("\\", "/"), ProdutoId = ProdutoId });
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                     else
                     {
-                        return null;
+                        ListaImagensDef.Add(new Imagem() { Caminho = Path.Combine("/uploads", ProdutoId.ToString(), nomeArquivo).Replace("\\", "/"), ProdutoId = ProdutoId });
                     }
                 }
             }
