@@ -26,7 +26,7 @@ namespace LojaVirtual
 
         public IConfiguration Configuration { get; }
 
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             /* 
@@ -48,7 +48,8 @@ namespace LojaVirtual
              * STMP
              * 
              */
-            services.AddScoped<SmtpClient>(options => {
+            services.AddScoped<SmtpClient>(options =>
+            {
 
                 SmtpClient smtp = new SmtpClient()
                 {
@@ -72,14 +73,18 @@ namespace LojaVirtual
 
             //session - configuração
             services.AddMemoryCache(); //guardar os dados na memoria
-            services.AddSession(options => {
+            services.AddSession(options =>
+            {
             });
 
             services.AddScoped<Sessao>();
             services.AddScoped<LoginCliente>();
             services.AddScoped<LoginColaborador>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(x => "O campo deve ser preenchido!");
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             string connection = "Server=DESKTOP-DF3H30G\\SQLEXPRESS;Database=LojaVirtual;User Id=sa;Password = masterkey;";
 
@@ -96,7 +101,7 @@ namespace LojaVirtual
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();          
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -105,7 +110,7 @@ namespace LojaVirtual
             app.UseCookiePolicy();
             app.UseSession();
             app.UseMiddleware<ValidateAntiForgeryTokenMiddleware>();
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
